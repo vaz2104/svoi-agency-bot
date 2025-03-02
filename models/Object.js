@@ -9,6 +9,10 @@ const RealEstateSchema = new Schema({
     type: String,
     default: "",
   },
+  objectDescription: {
+    type: String,
+    default: "",
+  },
   dateRegistration: {
     type: Date,
     default: new Date(dateUkrainTZ),
@@ -30,6 +34,7 @@ const RealEstateSchema = new Schema({
   realtor: {
     type: Schema.Types.ObjectId,
     ref: "User",
+    default: null,
   },
   status: {
     type: String,

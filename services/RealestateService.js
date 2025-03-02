@@ -21,13 +21,27 @@ class RealestateService {
   }
 
   async getAll() {
-    // if (!options?.userId || !options?.username) {
-    //   throw new Error("Invalid data sent");
-    // }
-
     const objects = await Object.find().populate("realtor");
-
     return objects;
+
+    // const relations = [];
+    // Promise.all(
+    //   exportedObjects.map(async (object) => {
+    //     const options = { ...object };
+    //     delete options.Order;
+    //     delete options.realtor;
+    //     options.comments = object.comments + " " + object.realtor;
+
+    //     // console.log(options);
+
+    //     const newObject = await Object.create(options);
+    //     relations.push(newObject);
+    //   })
+    // ).then(() => {
+    //   return relations;
+    // });
+
+    // return relations;
   }
   async delete(id) {
     if (!id) {
@@ -51,6 +65,15 @@ class RealestateService {
 
     return object;
   }
-}
+  async update(id, options) {
+    if (!id) {
+      throw new Error("Invalid data sent");
+    }
 
-module.exports = new RealestateService();
+    const object = await Object.findByIdAndUpdate(id, options, {
+      new: true,
+    });
+
+    return object;
+  }
+}
