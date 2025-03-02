@@ -10,6 +10,8 @@ const ExternalCommands = require("./services/ExternalCommands");
 const authRouts = require("./routs/authRouts");
 const realestateRouts = require("./routs/realestateRouts");
 const realtorsRouts = require("./routs/realtorsRouts");
+const ObjectCommands = require("./services/ObjectCommands");
+const BotMethods = require("./services/BotMethods");
 
 const app = express();
 
@@ -76,6 +78,8 @@ bot.onText(/\/start/, async function (msg) {
 
   console.log(userId, username, firstName);
 });
+
+BotMethods.callbackListener(bot);
 
 /*********************************************
  *     Commands

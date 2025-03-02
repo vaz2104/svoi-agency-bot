@@ -20,8 +20,9 @@ class RealestateService {
     return newObject;
   }
 
-  async getAll() {
-    const objects = await Object.find().populate("realtor");
+  async getAll(options) {
+    const objects = await Object.find(options).populate("realtor");
+
     return objects;
 
     // const relations = [];
@@ -70,10 +71,23 @@ class RealestateService {
       throw new Error("Invalid data sent");
     }
 
+    if (options?.realtor === "") {
+      options.realtor = null;
+    }
+
     const object = await Object.findByIdAndUpdate(id, options, {
       new: true,
     });
 
+    if (object?._id && options?.realtor) {
+      Notificatoins.createdNewObject({
+        userId: object?.realtor,
+        objectID: object?._id,
+      });
+    }
+
     return object;
   }
 }
+
+module.exports = new RealestateService();

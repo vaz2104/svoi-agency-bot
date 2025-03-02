@@ -11,7 +11,7 @@ class RealestateController {
   }
   async getAll(req, res) {
     try {
-      const data = await RealestateService.getAll();
+      const data = await RealestateService.getAll(req?.query);
       res.json(data);
     } catch (error) {
       res.status(500).json(error.message);

@@ -23,7 +23,7 @@ class Notificatoins {
             [
               {
                 text: "Переглянути інформацію про об`єкт",
-                callback_data: `object_printInfo_${objectID}`,
+                callback_data: `objectMethods_printInfo-${objectID}`,
               },
             ],
           ],
@@ -56,7 +56,7 @@ class Notificatoins {
             [
               {
                 text: "Переглянути інформацію про об`єкт",
-                callback_data: `object_printInfo_${objectID}`,
+                callback_data: `objectMethods_printInfo-${objectID}`,
               },
             ],
           ],
