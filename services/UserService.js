@@ -1,4 +1,5 @@
 const User = require("../models/User");
+const Notificatoins = require("./Notificatoins");
 
 class UserService {
   async createUser(options) {
@@ -6,7 +7,13 @@ class UserService {
       throw new Error("Invalid data sent");
     }
 
-    return await User.create(options);
+    const newUser = await User.create(options);
+
+    if (newUser?._id) {
+      await Notificatoins.createdNewRealtor();
+    }
+
+    return newUser;
   }
 
   async getUserByTelegramId(userId) {

@@ -75,12 +75,12 @@ class RealestateService {
       new: true,
     });
 
-    // if (object?._id && options?.realtor) {
-    //   Notificatoins.createdNewObject({
-    //     userId: object?.realtor,
-    //     objectID: object?._id,
-    //   });
-    // }
+    if (object?._id && options?.realtor) {
+      Notificatoins.createdNewObject({
+        userId: object?.realtor,
+        objectID: object?._id,
+      });
+    }
 
     return object;
   }

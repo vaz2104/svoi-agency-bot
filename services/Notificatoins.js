@@ -86,17 +86,6 @@ class Notificatoins {
         "Ваш профіль активовано!\nТепер Ви можете переглядати інформацію про призначені Вам об`єкти",
         {
           parse_mode: "HTML",
-          // reply_markup: {
-          //   inline_keyboard: [
-          //     [
-          //       {
-          //         text: "Переглянути інформацію про об`єкти",
-          //         callback_data: `objectMethods_printAllObjects-${userId}`,
-          //       },
-          //     ],
-          //   ],
-          //   one_time_keyboard: true,
-          // },
         }
       );
     } else {
@@ -107,6 +96,38 @@ class Notificatoins {
           parse_mode: "HTML",
         }
       );
+    }
+
+    bot = null;
+  }
+
+  async createdNewRealtor() {
+    let bot = new TelegramBot(process.env.BOT_TOKEN, {
+      polling: false,
+    });
+
+    if (!bot) return null;
+
+    const realtors = await User.find({
+      role: "admin",
+    });
+
+    if (realtors?.length) {
+      Promise.all(
+        realtors.map(async (realtor) => {
+          if (realtor?.userId) {
+            await bot.sendMessage(
+              realtor?.userId,
+              "У боті зареєструвався новий рієлтор!\n\nПерейдіть в адмін-панель та перевірте дані користувача",
+              {
+                parse_mode: "HTML",
+              }
+            );
+          }
+        })
+      ).then(() => {
+        return console.log("Success!");
+      });
     }
 
     bot = null;
