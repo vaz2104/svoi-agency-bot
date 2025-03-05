@@ -44,6 +44,8 @@ class ObjectCommands {
     await bot.sendMessage(realtor.userId, message, {
       parse_mode: "HTML",
     });
+
+    bot = null;
   }
 
   async printAllObjects(userID) {

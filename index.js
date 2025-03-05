@@ -55,10 +55,10 @@ bot.onText(/\/start/, async function (msg) {
       );
     }
 
-    telegramUser = await UserService.createUser(newUserOptions);
+    await UserService.createUser(newUserOptions);
   }
 
-  if (dataParts.length > 1) {
+  if (dataParts.length > 1 && telegramUser?._id) {
     checkCommand(dataParts[1], bot, {
       telegramUserId: telegramUser?._id,
       chatUserId: userId,
@@ -69,14 +69,14 @@ bot.onText(/\/start/, async function (msg) {
   await bot.sendMessage(
     userId,
     telegramUser?._id
-      ? `Привіт @${username}!\nРаді знову бачити!`
-      : `Привіт @${username}!\nВітаємо в <b>SVOI Agency BOT</b>\nОчікуйте підтвердження доступу від адміністратора`,
+      ? `Привіт ${username ? `@${username}` : firstName}!\nРаді знову бачити!`
+      : `Привіт ${
+          username ? `@${username}` : firstName
+        }!\nВітаємо в <b>SVOI Agency BOT</b>\nОчікуйте підтвердження доступу від адміністратора`,
     {
       parse_mode: "HTML",
     }
   );
-
-  console.log(userId, username, firstName);
 });
 
 BotMethods.callbackListener(bot);
@@ -118,7 +118,7 @@ function checkCommand(command, bot, options) {
 
   switch (commandName) {
     case "getAuthData":
-      ExternalCommands.getAuthData(commandName, bot, options);
+      ExternalCommands.getAuthData(bot, options);
       break;
   }
 }

@@ -2,8 +2,8 @@ const AuthService = require("./AuthService");
 const UserService = require("./UserService");
 
 class ExternalCommands {
-  async getAuthData(commandData, bot, options) {
-    if (!commandData) {
+  async getAuthData(bot, options) {
+    if (!options.telegramUserId) {
       await bot.sendMessage(
         options.chatUserId,
         `Помилка запиту!\nБудь ласка, повторіть спробу знову`
@@ -17,6 +17,22 @@ class ExternalCommands {
       await bot.sendMessage(
         options.chatUserId,
         `Помилка авторизації!\nБудь ласка, повторіть спробу знову`
+      );
+      return false;
+    }
+
+    if (!user?.isActivated) {
+      await bot.sendMessage(
+        options.chatUserId,
+        `Помилка авторизації!\nВаш профіль ще не активований адміністратором`
+      );
+      return false;
+    }
+
+    if (user?.role !== "admin") {
+      await bot.sendMessage(
+        options.chatUserId,
+        `Помилка авторизації!\nДоступ до панелі має лише адміністратор`
       );
       return false;
     }

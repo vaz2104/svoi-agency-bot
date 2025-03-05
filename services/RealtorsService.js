@@ -1,4 +1,3 @@
-const TelegramBot = require("node-telegram-bot-api");
 const User = require("../models/User");
 const Notificatoins = require("./Notificatoins");
 
