@@ -45,6 +45,63 @@ class ObjectCommands {
       parse_mode: "HTML",
     });
   }
+
+  async printAllObjects(userID) {
+    return false;
+    console.log(userID);
+
+    if (!userID) return;
+
+    const realtor = await RealtorsService.getSingle(userID);
+    console.log(realtor);
+    if (!realtor?._id) return;
+
+    const objects = await RealestateService.getAll({ realtor: realtor?._id });
+
+    let bot = new TelegramBot(process.env.BOT_TOKEN, {
+      polling: false,
+    });
+
+    if (!bot) return null;
+
+    console.log(objects);
+    if (!objects?.length) {
+      await bot.sendMessage(
+        realtor.userId,
+        `Вам поки не призначено жодного об'єкта!`,
+        {
+          parse_mode: "HTML",
+        }
+      );
+    } else {
+      Promise.all(
+        objects.map(async (realestate) => {
+          const message = `${realestate.clientName} (${
+            realestate.clientPhone
+          }) <b>${formOptionsLabes?.status[realestate.status]}</b>\n\n${
+            realestate.location
+          }`;
+
+          await bot.sendMessage(realtor?.userId, message, {
+            parse_mode: "HTML",
+            reply_markup: {
+              inline_keyboard: [
+                [
+                  {
+                    text: "Дивитись повну інформацію",
+                    callback_data: `objectMethods_printInfo-${realestate?._id}`,
+                  },
+                ],
+              ],
+              one_time_keyboard: true,
+            },
+          });
+        })
+      ).then(() => {
+        return console.log("Success!");
+      });
+    }
+  }
 }
 
 module.exports = new ObjectCommands();

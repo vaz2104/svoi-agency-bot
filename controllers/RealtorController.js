@@ -3,7 +3,7 @@ const RealtorsService = require("../services/RealtorsService");
 class RealtorController {
   async getAll(req, res) {
     try {
-      const data = await RealtorsService.getAll();
+      const data = await RealtorsService.getAll(req?.query);
       res.json(data);
     } catch (error) {
       res.status(500).json(error.message);

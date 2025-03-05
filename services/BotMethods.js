@@ -8,7 +8,8 @@ function objectMethodsSwitch(commandData) {
       ObjectCommands.printInfo(dataParts[1]);
       break;
 
-    default:
+    case "printAllObjects":
+      ObjectCommands.printAllObjects(dataParts[1]);
       break;
   }
 }
