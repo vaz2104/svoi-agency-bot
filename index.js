@@ -38,7 +38,7 @@ bot.onText(/\/start/, async function (msg) {
   const { id: userId, username, first_name: firstName } = msg.from;
   const dataParts = msg.text.split(" ");
 
-  const telegramUser = await UserService.getUserByTelegramId(userId);
+  let telegramUser = await UserService.getUserByTelegramId(userId);
 
   if (!telegramUser?._id) {
     const newUserOptions = {
@@ -55,7 +55,7 @@ bot.onText(/\/start/, async function (msg) {
       );
     }
 
-    await UserService.createUser(newUserOptions);
+    telegramUser = await UserService.createUser(newUserOptions);
   }
 
   if (dataParts.length > 1) {

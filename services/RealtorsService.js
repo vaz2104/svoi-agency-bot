@@ -27,7 +27,7 @@ class RealtorsService {
       new: true,
     });
 
-    if (updatedProfile?._id)
+    if (updatedProfile?._id && options?.isActivated !== undefined)
       Notificatoins.realtorProfileStatus({
         userId: updatedProfile?._id,
         chatId: updatedProfile?.userId,

@@ -2,8 +2,6 @@ const User = require("../models/User");
 
 class UserService {
   async createUser(options) {
-    console.log(options);
-
     if (!options?.userId || !options?.username) {
       throw new Error("Invalid data sent");
     }

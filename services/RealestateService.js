@@ -4,10 +4,6 @@ const Notificatoins = require("./Notificatoins");
 
 class RealestateService {
   async create(options) {
-    // if (!options?.userId || !options?.username) {
-    //   throw new Error("Invalid data sent");
-    // }
-
     const newObject = await Object.create(options);
 
     if (newObject?._id) {
@@ -79,12 +75,12 @@ class RealestateService {
       new: true,
     });
 
-    if (object?._id && options?.realtor) {
-      Notificatoins.createdNewObject({
-        userId: object?.realtor,
-        objectID: object?._id,
-      });
-    }
+    // if (object?._id && options?.realtor) {
+    //   Notificatoins.createdNewObject({
+    //     userId: object?.realtor,
+    //     objectID: object?._id,
+    //   });
+    // }
 
     return object;
   }
