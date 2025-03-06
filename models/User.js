@@ -32,7 +32,7 @@ const UserSchema = new Schema({
   },
   role: {
     type: String,
-    default: "", // admin | realtor
+    default: "realtor", // admin | realtor
   },
   lastActiveSession: {
     type: Date,

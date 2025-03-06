@@ -17,7 +17,8 @@ class RealestateService {
   }
 
   async getAll(options) {
-    const objects = await Object.find(options).populate("realtor");
+    const search = options?.realtor || options?.status ? options : {};
+    const objects = await Object.find(search).populate("realtor");
 
     return objects;
 
