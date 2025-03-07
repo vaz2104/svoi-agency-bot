@@ -1,10 +1,10 @@
-const Object = require("../models/Object");
+const RealEstate = require("../models/RealEstate");
 const User = require("../models/User");
 const Notificatoins = require("./Notificatoins");
 
 class RealestateService {
   async create(options) {
-    const newObject = await Object.create(options);
+    const newObject = await RealEstate.create(options);
 
     if (newObject?._id) {
       Notificatoins.createdNewObject({
@@ -18,7 +18,7 @@ class RealestateService {
 
   async getAll(options) {
     const search = options?.realtor || options?.status ? options : {};
-    const objects = await Object.find(search).populate("realtor");
+    const objects = await RealEstate.find(search).populate("realtor");
 
     return objects;
 
@@ -32,7 +32,7 @@ class RealestateService {
 
     //     // console.log(options);
 
-    //     const newObject = await Object.create(options);
+    //     const newObject = await RealEstate.create(options);
     //     relations.push(newObject);
     //   })
     // ).then(() => {
@@ -46,7 +46,7 @@ class RealestateService {
       throw new Error("Invalid data sent");
     }
 
-    const object = await Object.findByIdAndDelete(id);
+    const object = await RealEstate.findByIdAndDelete(id);
 
     // console.log(object);
 
@@ -59,7 +59,7 @@ class RealestateService {
       throw new Error("Invalid data sent");
     }
 
-    const object = await Object.findById(id).populate("realtor");
+    const object = await RealEstate.findById(id).populate("realtor");
 
     return object;
   }
@@ -72,18 +72,34 @@ class RealestateService {
       options.realtor = null;
     }
 
-    const object = await Object.findByIdAndUpdate(id, options, {
+    let author = null;
+    if (options?.author) {
+      author = options.author;
+      delete options.author;
+    }
+    const oldObjectVersion = await RealEstate.findById(id);
+
+    const newObjectVersion = await RealEstate.findByIdAndUpdate(id, options, {
       new: true,
     });
 
-    if (object?._id && options?.realtor) {
-      Notificatoins.createdNewObject({
-        userId: object?.realtor,
-        objectID: object?._id,
+    if (newObjectVersion?._id && options?.realtor) {
+      await Notificatoins.createdNewObject({
+        userId: newObjectVersion?.realtor,
+        objectID: newObjectVersion?._id,
       });
     }
 
-    return object;
+    if (author) {
+      await Notificatoins.updatedObject({
+        author,
+        oldObjectVersion,
+        newObjectVersion,
+        updatedFields: options,
+      });
+    }
+
+    return newObjectVersion;
   }
 }
 

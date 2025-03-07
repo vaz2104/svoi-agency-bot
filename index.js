@@ -10,6 +10,8 @@ const ExternalCommands = require("./services/ExternalCommands");
 const authRouts = require("./routs/authRouts");
 const realestateRouts = require("./routs/realestateRouts");
 const realtorsRouts = require("./routs/realtorsRouts");
+const notificationsRouts = require("./routs/notificationsRouts");
+
 const ObjectCommands = require("./services/ObjectCommands");
 const BotMethods = require("./services/BotMethods");
 
@@ -106,6 +108,7 @@ app.get("/", (req, res) => {
 app.use("/api", authRouts);
 app.use("/api", realtorsRouts);
 app.use("/api", realestateRouts);
+app.use("/api", notificationsRouts);
 
 app.listen(process.env.PORT, () => {
   console.log(`Bot started and listening on port ${process.env.PORT}`);

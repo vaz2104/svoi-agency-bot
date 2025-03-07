@@ -28,6 +28,14 @@ class RealtorController {
       res.status(500).json(error.message);
     }
   }
+  async getThumbnail(req, res) {
+    try {
+      const data = await RealtorsService.getThumbnail(req?.params?.id);
+      res.json(data);
+    } catch (error) {
+      res.status(500).json(error.message);
+    }
+  }
 }
 
 module.exports = new RealtorController();

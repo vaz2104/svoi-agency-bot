@@ -1,5 +1,9 @@
 const TelegramBot = require("node-telegram-bot-api");
 const User = require("../models/User");
+const Notification = require("../models/Notification");
+const dateUkrainTZ = require("../lib/getCurrentDateUkrainTimeZone");
+const { checkout } = require("../routs/authRouts");
+const NotificationUserRelation = require("../models/NotificationUserRelation");
 
 class Notificatoins {
   async createdNewObject(options) {
@@ -131,6 +135,47 @@ class Notificatoins {
     }
 
     bot = null;
+  }
+
+  async updatedObject({
+    author,
+    oldObjectVersion,
+    newObjectVersion,
+    updatedFields,
+  }) {
+    const changes = [];
+
+    Object.keys(updatedFields).forEach((option) => {
+      changes.push({
+        option,
+        oldVestion: oldObjectVersion[option],
+        newVersion: newObjectVersion[option],
+      });
+    });
+
+    const newNotification = await Notification.create({
+      author: author,
+      realEstate: newObjectVersion?._id,
+      message: JSON.stringify(changes),
+      date: new Date(dateUkrainTZ),
+    });
+
+    const admins = await User.find({
+      role: "admin",
+      isActivated: true,
+    });
+
+    Promise.all(
+      admins.map(async (admin) => {
+        await NotificationUserRelation.create({
+          notification: newNotification?._id,
+          recipient: admin?._id,
+          createdAt: new Date(dateUkrainTZ),
+        });
+      })
+    ).then(() => {
+      return console.log("Success!");
+    });
   }
 }
 
