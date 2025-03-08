@@ -28,9 +28,11 @@ class ObjectCommands {
       realestate.location
     }\n<b>Бюджет</b>: ${
       realestate.budget || " - "
-    }\n<b>Дата реєстрації об\`єкта</b>: ${formatDate(
+    }\n<b>Дата реєстрації об\`єкта</b>: ${
       realestate.dateRegistration
-    )}\n<b>Тип операції</b>: ${
+        ? formatDate(realestate.dateRegistration)
+        : "Дата не вказана"
+    }\n<b>Тип операції</b>: ${
       formOptionsLabes?.requestType[realestate.requestType]
     }\n<b>Тип об\`єкту</b>: ${
       formOptionsLabes?.typeRealEstateObject[realestate.typeRealEstateObject]
