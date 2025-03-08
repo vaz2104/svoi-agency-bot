@@ -158,6 +158,7 @@ class Notificatoins {
       realEstate: newObjectVersion?._id,
       message: JSON.stringify(changes),
       date: new Date(dateUkrainTZ),
+      timestamp: Date.now(),
     });
 
     const admins = await User.find({
@@ -171,6 +172,7 @@ class Notificatoins {
           notification: newNotification?._id,
           recipient: admin?._id,
           createdAt: new Date(dateUkrainTZ),
+          timestamp: Date.now(),
         });
       })
     ).then(() => {

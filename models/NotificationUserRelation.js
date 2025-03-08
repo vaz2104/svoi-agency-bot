@@ -21,6 +21,10 @@ const NotificationUserRelationSchema = new Schema({
     type: Date,
     default: "",
   },
+  timestamp: {
+    type: Number,
+    default: Date.now(),
+  },
 });
 
 module.exports = model(

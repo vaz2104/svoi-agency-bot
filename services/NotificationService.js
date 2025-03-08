@@ -5,7 +5,7 @@ class NotificationService {
     const objects = await NotificationUserRelation.find({
       recipient: id,
     })
-      .sort([["createdAt", -1]])
+      .sort([["timestamp", -1]])
       .populate(["notification"])
       .populate({
         path: "notification",
