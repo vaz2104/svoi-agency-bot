@@ -16,6 +16,10 @@ const NotificationSchema = new Schema({
     type: String,
     default: "",
   },
+  metadata: {
+    type: String,
+    default: "",
+  },
   date: {
     type: Date,
     default: new Date(dateUkrainTZ),

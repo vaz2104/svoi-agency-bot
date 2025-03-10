@@ -36,6 +36,10 @@ const RealEstateSchema = new Schema({
     ref: "User",
     default: null,
   },
+  author: {
+    type: Schema.Types.ObjectId,
+    ref: "User",
+  },
   status: {
     type: String,
     default: "",
@@ -47,6 +51,10 @@ const RealEstateSchema = new Schema({
   comments: {
     type: String,
     default: "",
+  },
+  timestamp: {
+    type: Number,
+    default: Date.now(),
   },
 });
 

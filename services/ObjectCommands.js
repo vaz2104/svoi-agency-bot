@@ -5,8 +5,8 @@ const RealestateService = require("./RealestateService");
 const RealtorsService = require("./RealtorsService");
 
 class ObjectCommands {
-  async printInfo(objectID) {
-    if (!objectID) return;
+  async printInfo(chatId, objectID) {
+    if (!objectID || !chatId) return;
 
     let bot = new TelegramBot(process.env.BOT_TOKEN, {
       polling: false,
@@ -17,8 +17,6 @@ class ObjectCommands {
     const realestate = await RealestateService.getSingle(objectID);
 
     if (!realestate?._id) return;
-
-    const realtor = await RealtorsService.getSingle(realestate.realtor?._id);
 
     const message = `<b>Клієнт</b>: ${realestate.clientName} (${
       realestate.clientPhone || " - "
@@ -42,8 +40,7 @@ class ObjectCommands {
       realestate.comments
     }`;
 
-    // return;
-    await bot.sendMessage(realtor.userId, message, {
+    await bot.sendMessage(chatId, message, {
       parse_mode: "HTML",
     });
 

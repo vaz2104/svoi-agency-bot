@@ -5,11 +5,19 @@ const Notificatoins = require("./Notificatoins");
 class RealestateService {
   async create(options) {
     const newObject = await RealEstate.create(options);
+    const author = await User.findById(options?.author);
 
-    if (newObject?._id) {
+    if (newObject?._id && options?.author !== options?.realtor) {
       Notificatoins.createdNewObject({
         userId: newObject?.realtor,
         objectID: newObject?._id,
+      });
+    }
+
+    if (author?.role === "realtor") {
+      Notificatoins.createdNewObjectByRealtor({
+        objectID: newObject?._id,
+        author,
       });
     }
 
@@ -17,8 +25,11 @@ class RealestateService {
   }
 
   async getAll(options) {
-    const search = options?.realtor || options?.status ? options : {};
-    const objects = await RealEstate.find(search).populate("realtor");
+    const search =
+      options?.realtor || options?.status || options?.author ? options : {};
+    const objects = await RealEstate.find(search)
+      .sort([["dateRegistration", -1]])
+      .populate("realtor");
 
     return objects;
 
@@ -47,10 +58,6 @@ class RealestateService {
     }
 
     const object = await RealEstate.findByIdAndDelete(id);
-
-    // console.log(object);
-
-    // await Notificatoins.deletedObject(id)
 
     return object;
   }

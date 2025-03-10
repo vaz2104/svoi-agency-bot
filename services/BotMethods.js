@@ -5,7 +5,7 @@ function objectMethodsSwitch(commandData) {
 
   switch (dataParts[0]) {
     case "printInfo":
-      ObjectCommands.printInfo(dataParts[1]);
+      ObjectCommands.printInfo(dataParts[1], dataParts[2]);
       break;
 
     case "printAllObjects":

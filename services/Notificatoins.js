@@ -2,13 +2,10 @@ const TelegramBot = require("node-telegram-bot-api");
 const User = require("../models/User");
 const Notification = require("../models/Notification");
 const dateUkrainTZ = require("../lib/getCurrentDateUkrainTimeZone");
-const { checkout } = require("../routs/authRouts");
 const NotificationUserRelation = require("../models/NotificationUserRelation");
 
 class Notificatoins {
   async createdNewObject(options) {
-    // console.log(options);
-
     let bot = new TelegramBot(process.env.BOT_TOKEN, {
       polling: false,
     });
@@ -27,7 +24,7 @@ class Notificatoins {
             [
               {
                 text: "Переглянути інформацію про об`єкт",
-                callback_data: `objectMethods_printInfo-${objectID}`,
+                callback_data: `objectMethods_printInfo-${realtor?.userId}-${objectID}`,
               },
             ],
           ],
@@ -156,7 +153,7 @@ class Notificatoins {
     const newNotification = await Notification.create({
       author: author,
       realEstate: newObjectVersion?._id,
-      message: JSON.stringify(changes),
+      metadata: JSON.stringify(changes),
       date: new Date(dateUkrainTZ),
       timestamp: Date.now(),
     });
@@ -179,6 +176,61 @@ class Notificatoins {
       return console.log("Success!");
     });
   }
+
+  async createdNewObjectByRealtor({ objectID, author }) {
+    let bot = new TelegramBot(process.env.BOT_TOKEN, {
+      polling: false,
+    });
+
+    if (!bot) return null;
+
+    const admins = await User.find({
+      role: "admin",
+      isActivated: true,
+    });
+
+    const newNotification = await Notification.create({
+      author: author?._id,
+      realEstate: objectID,
+      message: "Додано новий об`єкт",
+      date: new Date(dateUkrainTZ),
+      timestamp: Date.now(),
+    });
+
+    Promise.all(
+      admins.map(async (admin) => {
+        await NotificationUserRelation.create({
+          notification: newNotification?._id,
+          recipient: admin?._id,
+          createdAt: new Date(dateUkrainTZ),
+          timestamp: Date.now(),
+        });
+
+        await bot.sendMessage(
+          admin?.userId,
+          `${author?.firstName} (@${author?.username}) додав новий об\`єкт`,
+          {
+            parse_mode: "HTML",
+            reply_markup: {
+              inline_keyboard: [
+                [
+                  {
+                    text: "Переглянути інформацію про об`єкт",
+                    callback_data: `objectMethods_printInfo-${admin?.userId}-${objectID}`,
+                  },
+                ],
+              ],
+              one_time_keyboard: true,
+            },
+          }
+        );
+      })
+    ).then(() => {
+      return console.log("Success!");
+    });
+  }
+
+  bot = null;
 }
 
 module.exports = new Notificatoins();
