@@ -1,3 +1,5 @@
+const Notification = require("../models/Notification");
+const NotificationUserRelation = require("../models/NotificationUserRelation");
 const RealEstate = require("../models/RealEstate");
 const User = require("../models/User");
 const Notificatoins = require("./Notificatoins");
@@ -28,7 +30,7 @@ class RealestateService {
     const search =
       options?.realtor || options?.status || options?.author ? options : {};
     const objects = await RealEstate.find(search)
-      .sort([["dateRegistration", -1]])
+      .sort([["timestamp", -1]])
       .populate("realtor");
 
     return objects;
@@ -58,6 +60,17 @@ class RealestateService {
     }
 
     const object = await RealEstate.findByIdAndDelete(id);
+
+    const allNotifications = await Notification.find({
+      realEstate: object?._id,
+    });
+
+    allNotifications.map(async (notification) => {
+      await Notification.findByIdAndDelete(notification?._id);
+      await NotificationUserRelation.deleteOne({
+        notification: notification?._id,
+      });
+    });
 
     return object;
   }

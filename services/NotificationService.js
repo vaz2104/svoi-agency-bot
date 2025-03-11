@@ -1,3 +1,4 @@
+const dateUkrainTZ = require("../lib/getCurrentDateUkrainTimeZone");
 const NotificationUserRelation = require("../models/NotificationUserRelation");
 
 class NotificationService {
@@ -26,7 +27,7 @@ class NotificationService {
         recipient: id,
         isOpened: false,
       },
-      { isOpened: true }
+      { isOpened: true, openedDate: new Date(dateUkrainTZ) }
     );
 
     return objects;
